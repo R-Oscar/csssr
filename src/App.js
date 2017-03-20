@@ -3,7 +3,7 @@ import Results from './Results';
 import Spinner from './Spinner';
 import MessageBox from './MessageBox';
 import Autocomplete from './Autocomplete';
-import debounce from 'react-event-debounce'
+import debounce from 'react-event-debounce';
 import './App.css';
 
 const HOST = 'https://api.github.com';
@@ -185,6 +185,8 @@ export default class App extends Component {
                 perPage={this.state.perPage}
                 currentPage={this.state.page}
                 lastPage={this.state.lastPage}
+                username={this.state.username}
+                reponame={this.state.reponame}
                 prevPageHandler={this.prevPageHandler.bind(this)}
                 nextPageHandler={this.nextPageHandler.bind(this)}
                 firstPageHandler={this.firstPageHandler.bind(this)}

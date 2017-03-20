@@ -15,6 +15,12 @@
   width: 40%;
 }
 
+@media (max-width: 670px) {
+  .App-search-wrapper {
+    width: 100%;
+  }
+}
+
 .App-search {
   line-height: 32px;
   outline: none;

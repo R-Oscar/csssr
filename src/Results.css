@@ -1,6 +1,10 @@
-.results {
-	margin: 15px auto;
+.results-wrapper {
 	width: 85%;
+	margin: 15px auto;
+}
+
+.results {
+	width: 100%;
 	border-collapse: collapse;
 	border: 1px solid #aaa;
 }
@@ -17,4 +21,13 @@
 
 .results > tbody > tr:nth-child(even) {
 	background: #eee;
+}
+
+.pagination {
+	text-align: center;
+}
+
+.results-status {
+	display: inline-block;
+	margin-left: 10px;
 }

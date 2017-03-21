@@ -1,0 +1,54 @@
+.issue-avatar {
+	border-radius: 50%;
+	width: 100px;
+	vertical-align: middle;
+	margin: 0 10px;
+}
+
+.issue-wrapper {
+	text-align: center;
+}
+
+.issue-content {
+	display: inline-block;
+	margin: 20px;
+	border: 1px dashed #222;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.issue-header {
+	background-color: #222;
+	color: white;
+	text-align: center;
+	padding: 60px;
+}
+
+.issue-userinfo {
+	display: block;
+	color: #222;
+	text-decoration: none;
+	transition: color 0.5s ease;
+	margin: 10px;
+}
+
+.issue-userinfo:hover {
+	color: #666;
+}
+
+.issue-button {
+	background: #222;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	color: #fff;
+	font-weight: bold;
+	transition: background 0.5s ease;
+	height: 35px;
+	margin-top: 10px;
+	padding: 0 20px;
+}
+
+.issue-button:hover {
+	background: #333;
+}

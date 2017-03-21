@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import './Results.css';
 
 export default class Results extends React.Component {
@@ -27,7 +27,6 @@ export default class Results extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.data);
 		const {
 			data,
 			perPage,
@@ -42,7 +41,6 @@ export default class Results extends React.Component {
 		} = this.props;
 
 		return (
-			<Router>
 				<div className="results-wrapper" style={{ 'display': data.length > 0 ? 'table' : 'none' }}>
 					<h1>{username}/{reponame}</h1>
 					<select value={perPage} onChange={this.handleChange}>
@@ -90,7 +88,6 @@ export default class Results extends React.Component {
 						>&gt;&gt;</button>
 					</div>
 				</div>
-			</Router>
 		)
 	}
 }

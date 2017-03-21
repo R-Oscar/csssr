@@ -4,10 +4,8 @@ import Spinner from './Spinner';
 import MessageBox from './MessageBox';
 import Autocomplete from './Autocomplete';
 import debounce from 'react-event-debounce';
+import { HOST, TOKEN } from './config';
 import './App.css';
-
-const HOST = 'https://api.github.com';
-const TOKEN = 'a0bd7e3503b467adbbdd6667c786be689df8b739'; // change
 
 export default class App extends Component {
   constructor(props) {
@@ -33,7 +31,7 @@ export default class App extends Component {
         spinner: true
       });
 
-      let req = HOST + '/repos/' + username + '/' + reponame + '/issues?oauth_token=' + TOKEN + '&per_page=' + perPage + '&page=' + page;
+      let req = `${HOST}/repos/${username}/${reponame}/issues?oauth_token=${TOKEN}&per_page=${perPage}&page=${page}`;
 
       let xhr = new XMLHttpRequest();
       xhr.open('GET', req, true);

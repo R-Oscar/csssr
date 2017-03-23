@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import './Autocomplete.css';
 
 export default class Autocomplete extends React.Component {
@@ -13,12 +14,15 @@ export default class Autocomplete extends React.Component {
 
 	render() {
 		const {
-			repos
+			repos,
+			owner
 		} = this.props;
 		return (
 			<ul className="autocomplete">
 				{repos.map((element, index) =>
-					<li key={index} onClick={this.handleChange.bind(this)}>{element}</li>
+					<li key={index} onClick={this.handleChange.bind(this)}>
+						<Link to={`/v/${owner}/${element}/1/15/`}>{element}</Link>
+					</li>
 				)}
 			</ul>
 		)

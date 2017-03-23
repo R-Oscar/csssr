@@ -14,10 +14,16 @@
 }
 
 .autocomplete > li {
-	padding: 10px 0;
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .autocomplete > li:hover {
-	background: #5E5E5E;
+    background: #5E5E5E;
+}
+
+.autocomplete > li > a {
+	padding: 10px 0;
+    display: block;
+    text-decoration: none;
+    color: #fff;
 }

@@ -1,56 +1,168 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
+import MessageBox from './MessageBox';
+import { HOST, TOKEN } from './config';
+import equal from 'deep-equal';
 import './Results.css';
 
 export default class Results extends React.Component {
-	static propTypes = {
-		data: React.PropTypes.array.isRequired,
-		perPage: React.PropTypes.number.isRequired,
-		currentPage: React.PropTypes.number.isRequired,
-		lastPage: React.PropTypes.number.isRequired,
-		username: React.PropTypes.string.isRequired,
-		reponame: React.PropTypes.string.isRequired,
-		prevPageHandler: React.PropTypes.func.isRequired,
-		nextPageHandler: React.PropTypes.func.isRequired,
-		firstPageHandler: React.PropTypes.func.isRequired,
-		lastPageHandler: React.PropTypes.func.isRequired,
-		onPerPageChange: React.PropTypes.func.isRequired
-	}
-
 	constructor(props) {
 		super(props);
-		this.handleChange = this.handleChange.bind(this);
+		this.state = {
+			data: [],
+			lastPage: -1,
+			errorMessage: ''
+		}
+	}
+
+	sendRequest(username, reponame, page, perPage) {
+	  new Promise((resolve, reject) => {
+	    let req = `${HOST}/repos/${username}/${reponame}/issues?oauth_token=${TOKEN}&per_page=${perPage}&page=${page}`;
+
+	    let xhr = new XMLHttpRequest();
+	    xhr.open('GET', req, true);
+	    xhr.send();
+	    
+	    xhr.addEventListener('load', () => {
+	      resolve({
+	        data: JSON.parse(xhr.response),
+	        link: xhr.getResponseHeader('Link')
+	      });
+	    });
+
+	    xhr.addEventListener('error', () => {
+	      reject();
+	    });
+	  }).then(response => {
+	    let lastPage = null;
+
+	    if (response.link !== null) {
+	      for (let element of response.link.split(',')) {
+	        if (element.indexOf('last') !== -1) {
+	          lastPage = +element.substring(element.indexOf('&page=') + 6, element.indexOf('>'));
+	        }
+	      }
+	    }
+
+	    lastPage = lastPage === null ? page : lastPage;
+
+	    let res = response.data.map(element => {
+	      return {
+	        'number': element.number,
+	        'title': element.title,
+	        'created_at': element.created_at
+	      }
+	    });
+
+	    if (res.length === 0 && this.state.errorMessage.length === 0) {
+	    	this.setState({
+	    		...this.state,
+	    		errorMessage: 'Данные отсутствуют'
+	    	});
+	    }
+
+	    if (!equal(res, this.state.data)) {
+		    this.setState({
+		      ...this.state,
+		      data: res,
+		      lastPage
+		    });
+		}
+	  },
+
+	  () => {
+	    this.setState({
+	      ...this.state,
+	      errorMessage: "Во время загрузки данных произошла ошибка"
+	    });
+	  });
+	}
+
+	componentDidMount() {
+		const {
+			username,
+			reponame,
+			page,
+			perPage
+		} = this.props.params;
+		this.sendRequest(username, reponame, page, perPage);
+	}
+
+	componentDidUpdate() {
+		// const {
+		// 	username,
+		// 	reponame,
+		// 	page,
+		// 	perPage
+		// } = this.props.params;
+		// this.sendRequest(username, reponame, page, perPage);
 	}
 
 	handleChange(e) {
-		this.props.onPerPageChange(e.target.value);
+		const {
+			username,
+			reponame
+		} = this.props.params;
+		browserHistory.push(`/v/${username}/${reponame}/1/${e.target.value}`);
+		this.sendRequest(username, reponame, 1, e.target.value);
+	}
+
+	prevPageHandler() {
+		let params = this.props.params;
+		this.sendRequest(params.username, params.reponame, +params.page - 1, params.perPage);
+		browserHistory.push(`/v/${params.username}/${params.reponame}/${+params.page - 1}/${params.perPage}`);
+	}
+
+	nextPageHandler() {
+		let params = this.props.params;
+		this.sendRequest(params.username, params.reponame, +params.page + 1, params.perPage);
+		browserHistory.push(`/v/${params.username}/${params.reponame}/${+params.page + 1}/${params.perPage}`);
+	}
+
+	firstPageHandler() {
+		let params = this.props.params;
+		this.sendRequest(params.username, params.reponame, 1, params.perPage);
+		browserHistory.push(`/v/${params.username}/${params.reponame}/1/${params.perPage}`);
+	}
+
+	lastPageHandler() {
+		let params = this.props.params;
+		this.sendRequest(params.username, params.reponame, this.state.lastPage, params.perPage);
+		browserHistory.push(`/v/${params.username}/${params.reponame}/${this.state.lastPage}/${params.perPage}`);
+	}
+
+	closeMsgBox() {
+		this.setState({
+			...this.state,
+			errorMessage: ''
+		});
 	}
 
 	render() {
 		const {
 			data,
-			perPage,
-			currentPage,
-			lastPage,
+			lastPage
+		} = this.state;
+
+		const {
 			username,
 			reponame,
-			prevPageHandler,
-			nextPageHandler,
-			firstPageHandler,
-			lastPageHandler
-		} = this.props;
+			page,
+			perPage
+		} = this.props.params;
 
 		return (
+			<div>
 				<div className="results-wrapper" style={{ 'display': data.length > 0 ? 'table' : 'none' }}>
 					<h1>{username}/{reponame}</h1>
-					<select value={perPage} onChange={this.handleChange}>
+					<select value={perPage} onChange={this.handleChange.bind(this)}>
 						<option value="15">15</option>
 						<option value="30">30</option>
 						<option value="50">50</option>
 						<option value="100">100</option>
 					</select>
 
-					<p className="results-status">Отображается стр. {currentPage} из {lastPage}</p>
+					<p className="results-status">Отображается стр. {page} из {lastPage}</p>
 
 					<table className="results">
 						<thead>
@@ -74,20 +186,24 @@ export default class Results extends React.Component {
 					</table>
 
 					<div className="pagination">
-						<button disabled={currentPage === 1}
-								onClick={firstPageHandler.bind(this)}
+						<button disabled={+page === 1}
+								onClick={this.firstPageHandler.bind(this)}
 						>&lt;&lt;</button>
-						<button disabled={currentPage === 1}
-								onClick={prevPageHandler.bind(this)}
+						<button disabled={+page === 1}
+								onClick={this.prevPageHandler.bind(this)}
 						>&lt;</button>
-						<button disabled={currentPage === lastPage}
-								onClick={nextPageHandler.bind(this)}
+						<button disabled={+page === +lastPage}
+								onClick={this.nextPageHandler.bind(this)}
 						>&gt;</button>
-						<button disabled={currentPage === lastPage}
-								onClick={lastPageHandler.bind(this)}
+						<button disabled={+page === +lastPage}
+								onClick={this.lastPageHandler.bind(this)}
 						>&gt;&gt;</button>
 					</div>
 				</div>
+				<MessageBox message={this.state.errorMessage}
+				            closeHandler={this.closeMsgBox.bind(this)}
+				/>
+			</div>
 		)
 	}
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/Spinner.css';
+import '../styles/Spinner.css';
 
 const Spinner = ({ visible }) =>
 	<div className="overlay" style={{ 'display': visible ? 'block' : 'none' }}>

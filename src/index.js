@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import Results from './Results';
-import Issue from './Issue';
+import App from './components/App';
+import Results from './components/Results';
+import Issue from './components/Issue';
 import { Router, Route, browserHistory } from 'react-router';
 import './index.css';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import Autocomplete from './Autocomplete';
 import debounce from 'react-event-debounce';
-import { HOST, TOKEN } from './config';
-import './styles/App.css';
+import { HOST, TOKEN } from '../config';
+import '../styles/App.css';
 
 export default class MainLayout extends React.Component {
 	constructor(props) {

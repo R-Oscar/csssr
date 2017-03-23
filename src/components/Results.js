@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, browserHistory } from 'react-router';
 import MessageBox from './MessageBox';
 import Spinner from './Spinner';
-import { HOST, TOKEN } from './config';
-import './styles/Results.css';
+import { HOST, TOKEN } from '../config';
+import '../styles/Results.css';
 
 export default class Results extends React.Component {
 	constructor(props) {

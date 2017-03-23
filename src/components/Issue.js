@@ -1,7 +1,7 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import './styles/Issue.css';
-import { HOST, TOKEN } from './config';
+import '../styles/Issue.css';
+import { HOST, TOKEN } from '../config';
 
 export default class Issue extends React.Component {
 	constructor(props) {

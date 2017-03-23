@@ -1,5 +1,5 @@
 import React from 'react';
-import './MessageBox.css';
+import './styles/MessageBox.css';
 
 const MessageBox = ({ message, closeHandler }) =>
 	<div className="overlay" style={{ 'display': message === "" ? 'none' : 'block' }}>

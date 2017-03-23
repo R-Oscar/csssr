@@ -1,5 +1,6 @@
 import React from 'react';
-import './Issue.css';
+import { browserHistory } from 'react-router';
+import './styles/Issue.css';
 import { HOST, TOKEN } from './config';
 
 export default class Issue extends React.Component {
@@ -46,6 +47,10 @@ export default class Issue extends React.Component {
 		});
 	}
 
+	backButtonHandler() {
+		browserHistory.back();
+	}
+
 	render() {
 		return (
 			<div style={{ 'display': this.state.visible ? 'block' : 'none' }}>
@@ -62,7 +67,7 @@ export default class Issue extends React.Component {
 						<br />
 						<a href={this.state.link} target="_blank">Перейти на страницу Github</a>
 						<br />
-						<button className="issue-button">Назад</button>
+						<button className="issue-button" onClick={browserHistory.goBack}>Назад</button>
 					</div>
 				</div>
 			</div>

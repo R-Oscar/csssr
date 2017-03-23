@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import './Autocomplete.css';
+import './styles/Autocomplete.css';
 
 export default class Autocomplete extends React.Component {
 	static propTypes = {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, browserHistory } from 'react-router';
 import MessageBox from './MessageBox';
+import Spinner from './Spinner';
 import { HOST, TOKEN } from './config';
-import equal from 'deep-equal';
-import './Results.css';
+import './styles/Results.css';
 
 export default class Results extends React.Component {
 	constructor(props) {
@@ -11,12 +11,18 @@ export default class Results extends React.Component {
 		this.state = {
 			data: [],
 			lastPage: -1,
-			errorMessage: ''
+			errorMessage: '',
+			spinner: false
 		}
 	}
 
 	sendRequest(username, reponame, page, perPage) {
 	  new Promise((resolve, reject) => {
+	  	this.setState({
+	  	  ...this.state,
+	  	  spinner: true
+	  	});
+
 	    let req = `${HOST}/repos/${username}/${reponame}/issues?oauth_token=${TOKEN}&per_page=${perPage}&page=${page}`;
 
 	    let xhr = new XMLHttpRequest();
@@ -54,26 +60,30 @@ export default class Results extends React.Component {
 	      }
 	    });
 
-	    if (res.length === 0 && this.state.errorMessage.length === 0) {
-	    	this.setState({
-	    		...this.state,
-	    		errorMessage: 'Данные отсутствуют'
-	    	});
-	    }
-
-	    if (!equal(res, this.state.data)) {
+	    if (res.length > 0) {
 		    this.setState({
 		      ...this.state,
 		      data: res,
-		      lastPage
+		      lastPage,
+		      spinner: false
 		    });
+		} else {
+			this.setState({
+				...this.state,
+				data: [],
+				lastPage: -1,
+				errorMessage: "Данные отсутствуют",
+				spinner: false
+			})
 		}
 	  },
 
+	  // reject()
 	  () => {
 	    this.setState({
 	      ...this.state,
-	      errorMessage: "Во время загрузки данных произошла ошибка"
+	      errorMessage: "Во время загрузки данных произошла ошибка",
+	      spinner: false
 	    });
 	  });
 	}
@@ -88,14 +98,17 @@ export default class Results extends React.Component {
 		this.sendRequest(username, reponame, page, perPage);
 	}
 
-	componentDidUpdate() {
-		// const {
-		// 	username,
-		// 	reponame,
-		// 	page,
-		// 	perPage
-		// } = this.props.params;
-		// this.sendRequest(username, reponame, page, perPage);
+	componentDidUpdate(prevProps) {
+		const {
+			username,
+			reponame,
+			page,
+			perPage
+		} = this.props.params;
+
+		if (this.props.params !== prevProps.params) {
+			this.sendRequest(username, reponame, page, perPage);
+		}
 	}
 
 	handleChange(e) {
@@ -109,25 +122,21 @@ export default class Results extends React.Component {
 
 	prevPageHandler() {
 		let params = this.props.params;
-		this.sendRequest(params.username, params.reponame, +params.page - 1, params.perPage);
 		browserHistory.push(`/v/${params.username}/${params.reponame}/${+params.page - 1}/${params.perPage}`);
 	}
 
 	nextPageHandler() {
 		let params = this.props.params;
-		this.sendRequest(params.username, params.reponame, +params.page + 1, params.perPage);
 		browserHistory.push(`/v/${params.username}/${params.reponame}/${+params.page + 1}/${params.perPage}`);
 	}
 
 	firstPageHandler() {
 		let params = this.props.params;
-		this.sendRequest(params.username, params.reponame, 1, params.perPage);
 		browserHistory.push(`/v/${params.username}/${params.reponame}/1/${params.perPage}`);
 	}
 
 	lastPageHandler() {
 		let params = this.props.params;
-		this.sendRequest(params.username, params.reponame, this.state.lastPage, params.perPage);
 		browserHistory.push(`/v/${params.username}/${params.reponame}/${this.state.lastPage}/${params.perPage}`);
 	}
 
@@ -203,6 +212,7 @@ export default class Results extends React.Component {
 				<MessageBox message={this.state.errorMessage}
 				            closeHandler={this.closeMsgBox.bind(this)}
 				/>
+				<Spinner visible={this.state.spinner} />
 			</div>
 		)
 	}

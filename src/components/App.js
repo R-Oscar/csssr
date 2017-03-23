@@ -1,9 +1,8 @@
 import React from 'react';
-import Spinner from './Spinner';
 import Autocomplete from './Autocomplete';
 import debounce from 'react-event-debounce';
 import { HOST, TOKEN } from './config';
-import './App.css';
+import './styles/App.css';
 
 export default class MainLayout extends React.Component {
 	constructor(props) {
@@ -11,13 +10,12 @@ export default class MainLayout extends React.Component {
 
 		this.state = {
 			username: "",
-			spinner: false,
 			errorMessage: '',
 			repos: []
 		};
 	}
 
-	sendRepoRequest(input) {
+	getRepos(input) {
 	  new Promise((resolve, reject) => {
 	    let req = HOST + '/users/' + input + '/repos?oauth_token=' + TOKEN;
 
@@ -48,7 +46,7 @@ export default class MainLayout extends React.Component {
 	  this.setState({
 	    ...this.state,
 	    username: e.target.value
-	  }, () => this.sendRepoRequest(this.state.username));
+	  }, () => this.getRepos(this.state.username));
 	}
 
 	selectRepoHandler(repo) {
@@ -73,7 +71,6 @@ export default class MainLayout extends React.Component {
 	        </div>
 	      </div>
 	      {this.props.children}
-	      <Spinner visible={this.state.spinner} />
 	    </div>
 	  );
 	}

@@ -36,7 +36,7 @@ export default class Issue extends React.Component {
 			console.log(response);
 			this.setState({
 				...this.state,
-				link: response.body,
+				link: response.html_url,
 				date: new Date(response.created_at).toLocaleString(),
 				title: response.title,
 				userImage: response.user.avatar_url,
@@ -52,6 +52,7 @@ export default class Issue extends React.Component {
 	}
 
 	render() {
+		console.log(this.state.link);
 		return (
 			<div style={{ 'display': this.state.visible ? 'block' : 'none' }}>
 				<div className="issue-header">
